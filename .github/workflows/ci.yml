@@ -1,0 +1,29 @@
+name: Build & Push to ECR
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kodu al
+        uses: actions/checkout@v4
+        # Repo içeriğini runner'a indirir
+
+      - name: ECR'ye login ol
+        uses: aws-actions/amazon-ecr-login@v1
+        # AWS Console'dan aldığın IAM key'leri kullanır
+        # Docker login otomatik yapılır
+
+      - name: Image build ve push
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          REPO_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO }}
+
+          docker build -t $REPO_URI:$IMAGE_TAG ./app
+          docker push $REPO_URI:$IMAGE_TAG
+
