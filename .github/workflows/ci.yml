@@ -25,7 +25,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/payriff/payments-mock:${{ github.sha }}
-          docker build -t $IMAGE ./app
+          docker build -t $IMAGE -f app/Dockerfile ./app
           docker push $IMAGE
 
       - name: Create artifact zip
